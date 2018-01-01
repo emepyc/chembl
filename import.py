@@ -7,6 +7,7 @@ from subprocess import call
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import parallel_bulk, streaming_bulk
 import requests
+import certifi
 from tqdm import tqdm
 import argparse
 
@@ -202,7 +203,7 @@ for table in tables:
     start_time = time.time()
     dump_file_name = os.path.join(IMPORT_DIR,'chembl-%s.json' % table)
     if not os.path.exists(dump_file_name):
-        print 'Extracting data for table %s'%table
+        # print 'Extracting data for table %s'%table
         with open(dump_file_name, 'w') as f:
             for i, row in enumerate(cursor):
                 for k, v, in row.items():
@@ -219,7 +220,19 @@ for table in tables:
     extracted_counts[table] = i
 
 '''Import json files in elasticsearch'''
-es = Elasticsearch(ES_URL)
+# es = Elasticsearch(ES_URL)
+# SSL client authentication using client_cert and client_key
+es = Elasticsearch(
+    ['https://kibiadmin:password@localhost:9221'],
+    # http_auth=('kibiadmin', 'password'),
+    # port=9221,
+    use_ssl=True,
+    verify_certs=True,
+    ca_certs='./pki/searchguard/ca.pem',
+    client_cert = './pki/searchguard/CN=sgadmin.crt.pem',
+    client_key = './pki/searchguard/CN=sgadmin.key.pem'
+)
+
 def data_iterator(table, id_field):
     for i, line in tqdm(enumerate(open(os.path.join(IMPORT_DIR,'chembl-%s.json' % table))),
                         desc='loading %s in elasticsearch' % table,
