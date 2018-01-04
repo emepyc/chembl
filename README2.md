@@ -53,7 +53,8 @@ $ pip install -r requirements.txt
 
 - Run the `import.py` script:
 ```
-$ python3 import.py -es "https://localhost:9221" -certs pki
+$ python3 import.py -es "https://localhost:9221"
+# No option ? -certs pki
 ```
 
    this will:

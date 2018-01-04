@@ -223,9 +223,9 @@ for table in tables:
 # es = Elasticsearch(ES_URL)
 # SSL client authentication using client_cert and client_key
 es = Elasticsearch(
-    ['https://kibiadmin:password@localhost:9221'],
+    ['https://kibiadmin:password@localhost:9220'],
     # http_auth=('kibiadmin', 'password'),
-    # port=9221,
+    # port=9220,
     use_ssl=True,
     verify_certs=True,
     ca_certs='./pki/searchguard/ca.pem',
